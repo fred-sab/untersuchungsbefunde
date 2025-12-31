@@ -1,0 +1,118 @@
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin: 24px;
+  max-width: 900px;
+}
+
+.rows {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* include | textarea | delete */
+  align-items: start;
+  gap: 8px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 64px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+button {
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f6f6f6;
+  cursor: pointer;
+  font: inherit;
+}
+
+button:hover {
+  background: #efefef;
+}
+
+.deleteRowBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  margin-top: 6px;
+}
+
+.deleteRowBtn:hover {
+  background: #f3f3f3;
+}
+
+.deleteRowBtn:focus-visible {
+  outline: 2px solid #4c9ffe;
+  outline-offset: 2px;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.outputLabel {
+  margin-top: 18px;
+  display: block;
+}
+
+textarea[readonly] {
+  background: #fafafa;
+}
+
+.includeToggle {
+  display: inline-grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  user-select: none;
+  font-size: 12px;
+  color: #333;
+}
+
+.includeToggle input {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "text text"
+      "delete include";
+  }
+  .row textarea {
+    grid-area: text;
+  }
+  .includeToggle {
+    grid-area: include;
+    margin-top: 0;
+    justify-self: start;
+  }
+  .deleteRowBtn {
+    grid-area: delete;
+    margin-top: 0;
+    justify-self: end;
+  }
+}

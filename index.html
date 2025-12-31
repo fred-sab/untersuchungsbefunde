@@ -4,87 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Free Text Rows</title>
-    <style>
-      body {
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        margin: 24px;
-        max-width: 900px;
-      }
-
-      .rows {
-        display: grid;
-        gap: 12px;
-        margin-bottom: 16px;
-      }
-
-      .row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: start;
-        gap: 8px;
-      }
-
-      textarea {
-        width: 100%;
-        min-height: 64px;
-        resize: vertical;
-        padding: 10px 12px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font: inherit;
-        box-sizing: border-box;
-      }
-
-      button {
-        width: fit-content;
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        background: #f6f6f6;
-        cursor: pointer;
-        font: inherit;
-      }
-
-      button:hover {
-        background: #efefef;
-      }
-
-      .deleteRowBtn {
-        width: 28px;
-        height: 28px;
-        border-radius: 999px;
-        border: 1px solid #ccc;
-        background: #fff;
-        cursor: pointer;
-        line-height: 1;
-        display: inline-grid;
-        place-items: center;
-        padding: 0;
-        margin-top: 6px;
-      }
-
-      .deleteRowBtn:hover {
-        background: #f3f3f3;
-      }
-
-      .deleteRowBtn:focus-visible {
-        outline: 2px solid #4c9ffe;
-        outline-offset: 2px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
     <main>
+      <p class="sectionTitle">Text</p>
+
       <div id="rows" class="rows" aria-label="Free text rows">
         <div class="row">
+          <label class="includeToggle" title="Include this row in Combined (Ctrl/⌘+I)">
+            <input class="includeCheckbox" type="checkbox" checked />
+            Include
+          </label>
+
           <textarea name="text-1" placeholder="Enter text..."></textarea>
+
           <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
             ×
           </button>
         </div>
         <div class="row">
+          <label class="includeToggle" title="Include this row in Combined (Ctrl/⌘+I)">
+            <input class="includeCheckbox" type="checkbox" checked />
+            Include
+          </label>
+
           <textarea name="text-2" placeholder="Enter text..."></textarea>
+
           <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
             ×
           </button>
@@ -92,6 +39,9 @@
       </div>
 
       <button id="addRowBtn" type="button">Add row</button>
+
+      <label class="outputLabel" for="combinedText">Combined</label>
+      <textarea id="combinedText" readonly aria-label="Combined text"></textarea>
     </main>
 
     <script src="script.js"></script>
