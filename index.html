@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Free Text Rows</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        margin: 24px;
+        max-width: 900px;
+      }
+
+      .rows {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: 8px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 64px;
+        resize: vertical;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font: inherit;
+        box-sizing: border-box;
+      }
+
+      button {
+        width: fit-content;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: #f6f6f6;
+        cursor: pointer;
+        font: inherit;
+      }
+
+      button:hover {
+        background: #efefef;
+      }
+
+      .deleteRowBtn {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+        line-height: 1;
+        display: inline-grid;
+        place-items: center;
+        padding: 0;
+        margin-top: 6px;
+      }
+
+      .deleteRowBtn:hover {
+        background: #f3f3f3;
+      }
+
+      .deleteRowBtn:focus-visible {
+        outline: 2px solid #4c9ffe;
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div id="rows" class="rows" aria-label="Free text rows">
+        <div class="row">
+          <textarea name="text-1" placeholder="Enter text..."></textarea>
+          <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
+            ×
+          </button>
+        </div>
+        <div class="row">
+          <textarea name="text-2" placeholder="Enter text..."></textarea>
+          <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
+            ×
+          </button>
+        </div>
+      </div>
+
+      <button id="addRowBtn" type="button">Add row</button>
+    </main>
+
+    <script>
+      const rowsEl = document.getElementById("rows");
+      const addRowBtn = document.getElementById("addRowBtn");
+
+      function createRow(index) {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const textarea = document.createElement("textarea");
+        textarea.name = `text-${index}`;
+        textarea.placeholder = "Enter text...";
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "deleteRowBtn";
+        deleteBtn.type = "button";
+        deleteBtn.title = "Delete row";
+        deleteBtn.setAttribute("aria-label", "Delete row");
+        deleteBtn.textContent = "×";
+        deleteBtn.addEventListener("click", () => row.remove());
+
+        row.appendChild(textarea);
+        row.appendChild(deleteBtn);
+        return row;
+      }
+
+      function addRow() {
+        const index = rowsEl.querySelectorAll("textarea").length + 1;
+        const row = createRow(index);
+        rowsEl.appendChild(row);
+        row.querySelector("textarea").focus();
+      }
+
+      rowsEl.querySelectorAll(".row").forEach((row) => {
+        const deleteBtn = row.querySelector(".deleteRowBtn");
+        if (deleteBtn) {
+          deleteBtn.addEventListener("click", () => row.remove());
+        }
+      });
+
+      addRowBtn.addEventListener("click", addRow);
+    </script>
+  </body>
+</html>
