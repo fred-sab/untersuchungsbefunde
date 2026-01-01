@@ -23,7 +23,7 @@
 	- [ ] Tonsillen belegt.
 - Sekret
 	- [x] Oropharynx unauffällig.
-	- [ ] Rachsekret.
+	- [ ] Rachensekret#Sekretstrasse im Oropharynx.
 - Klopfschmerz
 	- [x] Kein Klopfschmerz über NNH.
 	- [ ] Klopfschmerz rechts frontalis.
