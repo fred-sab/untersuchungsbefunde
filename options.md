@@ -1,0 +1,32 @@
+### Lunge
+- Atmungsfrequenz
+	- [x] AF im normalen Bereich
+	- [ ] AF erhöht
+- Mund
+	- [x] Nasenatmung
+	- [ ] Mundatmung
+- Nebengeräusche
+	- [x] VAG beidesitig ohne Nebengeräusche
+	- [ ] Todo
+- Perkussion
+	- [x] Perkussion symmetrisch sonor
+	- [ ] Links hypersonor
+	- [ ] Rechts hypersonor
+	- [ ] BDS hypersonor
+	- [ ] Links abgeschwächt
+	- [ ] Rechts abgeschwächt
+	- [ ] BDS abgeschwächt
+- Tonsillen
+	- [x] Enoral reizlos. Tonsillen nicht gerötet oder belegt.
+	- [ ] Vergrössert
+	- [ ] Gerötet
+	- [ ] Belegt
+- Sekret
+	- [x] Oropharynx unauffällig.
+	- [ ] Rachsekret
+- Klopfschmerz
+	- [x] Kein Klopfschmerz über NNH.
+	- [ ] Klopfschmerz rechts frontalis
+	- [ ] Klopfschmerz links frontalis
+	- [ ] Klopfschmerz rechts maxillaris
+	- [ ] Klopfschmerz links maxillaris

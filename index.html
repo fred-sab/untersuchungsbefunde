@@ -3,45 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Free Text Rows</title>
+    <title>Untersuchungsbefunde</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
-    <main>
-      <p class="sectionTitle">Text</p>
+    <header class="app-header">
+      <h1>Untersuchungsbefunde</h1>
+      <p class="subtle">Select one option per section; the generated text updates immediately.</p>
+    </header>
 
-      <div id="rows" class="rows" aria-label="Free text rows">
-        <div class="row">
-          <label class="includeToggle" title="Include this row in Combined (Ctrl/⌘+I)">
-            <input class="includeCheckbox" type="checkbox" checked />
-            Include
-          </label>
-
-          <textarea name="text-1" placeholder="Enter text..."></textarea>
-
-          <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
-            ×
-          </button>
+    <main class="app">
+      <section class="card">
+        <div class="card-header">
+          <h2>Auswahl</h2>
+          <div class="actions">
+            <button id="resetBtn" type="button">Reset</button>
+            <button id="copyBtn" type="button">Copy</button>
+          </div>
         </div>
-        <div class="row">
-          <label class="includeToggle" title="Include this row in Combined (Ctrl/⌘+I)">
-            <input class="includeCheckbox" type="checkbox" checked />
-            Include
-          </label>
 
-          <textarea name="text-2" placeholder="Enter text..."></textarea>
+        <div id="status" class="status" aria-live="polite"></div>
+        <form id="form" class="dimensions"></form>
+      </section>
 
-          <button class="deleteRowBtn" type="button" aria-label="Delete row" title="Delete row">
-            ×
-          </button>
+      <section class="card">
+        <div class="card-header">
+          <h2>Generierter Text</h2>
         </div>
-      </div>
-
-      <button id="addRowBtn" type="button">Add row</button>
-
-      <label class="outputLabel" for="combinedText">Combined</label>
-      <textarea id="combinedText" readonly aria-label="Combined text"></textarea>
+        <textarea id="output" class="output" readonly rows="10"></textarea>
+      </section>
     </main>
 
     <script src="script.js"></script>

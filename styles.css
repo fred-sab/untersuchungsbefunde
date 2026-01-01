@@ -1,118 +1,163 @@
-body {
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  margin: 24px;
-  max-width: 900px;
+:root {
+  --bg: #0b0c10;
+  --panel: #12141a;
+  --text: #e8eaf0;
+  --muted: #a9afbf;
+  --border: #222634;
+  --accent: #6aa6ff;
+  --danger: #ff6a6a;
+  --ok: #7dffb2;
 }
 
-.rows {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.row {
-  display: grid;
-  grid-template-columns: auto 1fr auto; /* include | textarea | delete */
-  align-items: start;
-  gap: 8px;
-}
-
-textarea {
-  width: 100%;
-  min-height: 64px;
-  resize: vertical;
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font: inherit;
+* {
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans",
+    sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #07080b, var(--bg));
+}
+
+.app-header {
+  padding: 20px 16px 8px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.subtle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .app {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+  }
+}
+
+.card {
+  background: color-mix(in oklab, var(--panel), #000 10%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
 button {
-  width: fit-content;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background: #f6f6f6;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #0e1016;
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
   cursor: pointer;
-  font: inherit;
 }
 
 button:hover {
-  background: #efefef;
+  border-color: color-mix(in oklab, var(--accent), var(--border) 60%);
 }
 
-.deleteRowBtn {
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid #ccc;
-  background: #fff;
-  cursor: pointer;
-  line-height: 1;
-  display: inline-grid;
-  place-items: center;
-  padding: 0;
-  margin-top: 6px;
+.status {
+  min-height: 18px;
+  margin: 6px 0 10px;
+  font-size: 13px;
+  color: var(--muted);
 }
 
-.deleteRowBtn:hover {
-  background: #f3f3f3;
+.status[data-type="error"] {
+  color: var(--danger);
 }
 
-.deleteRowBtn:focus-visible {
-  outline: 2px solid #4c9ffe;
-  outline-offset: 2px;
+.status[data-type="success"] {
+  color: var(--ok);
 }
 
-.sectionTitle {
+.dimensions {
+  display: grid;
+  gap: 12px;
+}
+
+.dimension {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.dimension legend {
+  padding: 0 6px;
+  color: var(--text);
   font-weight: 600;
-  margin: 0 0 8px 0;
+  font-size: 14px;
 }
 
-.outputLabel {
-  margin-top: 18px;
-  display: block;
+.option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 6px 4px;
+  cursor: pointer;
 }
 
-textarea[readonly] {
-  background: #fafafa;
+.option input {
+  margin-top: 2px;
+  accent-color: var(--accent);
 }
 
-.includeToggle {
-  display: inline-grid;
-  grid-auto-flow: column;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  user-select: none;
-  font-size: 12px;
-  color: #333;
+.option span {
+  line-height: 1.3;
 }
 
-.includeToggle input {
-  width: 16px;
-  height: 16px;
-}
-
-@media (max-width: 520px) {
-  .row {
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "text text"
-      "delete include";
-  }
-  .row textarea {
-    grid-area: text;
-  }
-  .includeToggle {
-    grid-area: include;
-    margin-top: 0;
-    justify-self: start;
-  }
-  .deleteRowBtn {
-    grid-area: delete;
-    margin-top: 0;
-    justify-self: end;
-  }
+.output {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #0e1016;
+  color: var(--text);
+  padding: 10px;
+  border-radius: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12.5px;
+  resize: vertical;
+  min-height: 220px;
 }
