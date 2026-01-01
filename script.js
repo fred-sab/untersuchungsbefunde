@@ -74,11 +74,20 @@
         if (!text) continue;
 
         // Split on # to get displayText and outputText
+        // If # is present, text before # is for display, text after # is for output
+        // If no #, or if either part is empty, use the original text for both
         let displayText, outputText;
-        if (text.includes("#")) {
-          const parts = text.split("#", 2);
-          displayText = parts[0].trim();
-          outputText = parts[1].trim();
+        const hashIndex = text.indexOf("#");
+        if (hashIndex > 0 && hashIndex < text.length - 1) {
+          const beforeHash = text.substring(0, hashIndex).trim();
+          const afterHash = text.substring(hashIndex + 1).trim();
+          if (beforeHash && afterHash) {
+            displayText = beforeHash;
+            outputText = afterHash;
+          } else {
+            displayText = text;
+            outputText = text;
+          }
         } else {
           displayText = text;
           outputText = text;
