@@ -1,5 +1,5 @@
 (() => {
-  /** @typedef {{ text: string, isDefault: boolean }} Option */
+  /** @typedef {{ text: string, displayText: string, outputText: string, isDefault: boolean }} Option */
   /** @typedef {{ title: string, options: Option[], defaultIndex: number }} Dimension */
 
   const formEl = document.getElementById("form");
@@ -73,8 +73,19 @@
         const text = (optMatch[2] || "").trim();
         if (!text) continue;
 
+        // Split on # to get displayText and outputText
+        let displayText, outputText;
+        if (text.includes("#")) {
+          const parts = text.split("#", 2);
+          displayText = parts[0].trim();
+          outputText = parts[1].trim();
+        } else {
+          displayText = text;
+          outputText = text;
+        }
+
         const idx = current.options.length;
-        current.options.push({ text, isDefault });
+        current.options.push({ text, displayText, outputText, isDefault });
 
         // first [x] wins; otherwise stays 0
         if (isDefault && current.options.every((o, i) => i === idx || !o.isDefault)) {
@@ -99,8 +110,8 @@
 
     for (const dim of dims) {
       const name = `dim_${slugify(dim.title)}_${Math.random().toString(16).slice(2)}`;
-      // Store the default text (not shown in UI) for output generation.
-      defaultsByName.set(name, dim.options[dim.defaultIndex]?.text || "");
+      // Store the default outputText (not shown in UI) for output generation.
+      defaultsByName.set(name, dim.options[dim.defaultIndex]?.outputText || "");
 
       const fieldset = document.createElement("fieldset");
       fieldset.className = "dimension";
@@ -126,9 +137,11 @@
         input.id = id;
         input.value = String(idx);
         input.checked = false;
+        // Store outputText on the input element for later retrieval
+        input.dataset.outputText = opt.outputText;
 
         const span = document.createElement("span");
-        span.innerHTML = escapeHtml(opt.text);
+        span.innerHTML = escapeHtml(opt.displayText);
 
         label.appendChild(input);
         label.appendChild(span);
@@ -149,8 +162,8 @@
 
       if (checked.length > 0) {
         for (const cb of checked) {
-          const label = fs.querySelector(`label.option[for="${CSS.escape(cb.id)}"] span`);
-          const text = label ? label.textContent : "";
+          // Get the outputText from the input element's dataset
+          const text = cb.dataset.outputText || "";
           if (text) lines.push(text);
         }
       } else {
