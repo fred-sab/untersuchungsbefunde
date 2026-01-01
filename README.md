@@ -3,7 +3,7 @@
 This is a UI tool to help doctors for reporting the findings of their examinations.
 It allows to easily generate a text by selecting minimally problems noticed.
 
-It relies on the file `options.md`.
+It relies on the file `options.md` for content.
 
 ## options.md format
 
