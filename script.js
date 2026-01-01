@@ -99,16 +99,21 @@
 
     for (const dim of dims) {
       const name = `dim_${slugify(dim.title)}_${Math.random().toString(16).slice(2)}`;
-      defaultsByName.set(name, String(dim.defaultIndex));
+      // Store the default text (not shown in UI) for output generation.
+      defaultsByName.set(name, dim.options[dim.defaultIndex]?.text || "");
 
       const fieldset = document.createElement("fieldset");
       fieldset.className = "dimension";
+      fieldset.dataset.name = name;
 
       const legend = document.createElement("legend");
       legend.textContent = dim.title;
       fieldset.appendChild(legend);
 
+      // Only render problem options (non-default) as checkboxes.
       dim.options.forEach((opt, idx) => {
+        if (idx === dim.defaultIndex) return; // hide default option in UI
+
         const id = `${name}_${idx}`;
 
         const label = document.createElement("label");
@@ -116,11 +121,11 @@
         label.htmlFor = id;
 
         const input = document.createElement("input");
-        input.type = "radio";
+        input.type = "checkbox";
         input.name = name;
         input.id = id;
         input.value = String(idx);
-        input.checked = idx === dim.defaultIndex;
+        input.checked = false;
 
         const span = document.createElement("span");
         span.innerHTML = escapeHtml(opt.text);
@@ -139,12 +144,19 @@
     const fieldsets = Array.from(formEl.querySelectorAll("fieldset.dimension"));
 
     for (const fs of fieldsets) {
-      const checked = fs.querySelector('input[type="radio"]:checked');
-      if (!checked) continue;
+      const name = fs.dataset.name || "";
+      const checked = Array.from(fs.querySelectorAll('input[type="checkbox"]:checked'));
 
-      const label = fs.querySelector(`label.option[for="${CSS.escape(checked.id)}"] span`);
-      const text = label ? label.textContent : "";
-      if (text) lines.push(text);
+      if (checked.length > 0) {
+        for (const cb of checked) {
+          const label = fs.querySelector(`label.option[for="${CSS.escape(cb.id)}"] span`);
+          const text = label ? label.textContent : "";
+          if (text) lines.push(text);
+        }
+      } else {
+        const defaultText = defaultsByName.get(name) || "";
+        if (defaultText) lines.push(defaultText);
+      }
     }
 
     return lines.join("\n");
@@ -168,17 +180,8 @@
   }
 
   function resetToDefaults() {
-    const fieldsets = Array.from(formEl.querySelectorAll("fieldset.dimension"));
-    for (const fs of fieldsets) {
-      const input = fs.querySelector('input[type="radio"]');
-      if (!input) continue;
-      const name = input.name;
-      const defaultIdx = defaultsByName.get(name);
-      if (defaultIdx == null) continue;
-
-      const toCheck = fs.querySelector(`input[type="radio"][name="${CSS.escape(name)}"][value="${CSS.escape(defaultIdx)}"]`);
-      if (toCheck) toCheck.checked = true;
-    }
+    const checks = Array.from(formEl.querySelectorAll('input[type="checkbox"]'));
+    for (const cb of checks) cb.checked = false;
     updateOutput();
   }
 
