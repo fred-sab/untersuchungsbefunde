@@ -1,5 +1,5 @@
 (() => {
-  /** @typedef {{ text: string, displayText: string, outputText: string, isDefault: boolean }} Option */
+  /** @typedef {{ displayText: string, outputText: string, isDefault: boolean }} Option */
   /** @typedef {{ title: string, options: Option[], defaultIndex: number }} Dimension */
 
   const formEl = document.getElementById("form");
@@ -94,7 +94,7 @@
         }
 
         const idx = current.options.length;
-        current.options.push({ text, displayText, outputText, isDefault });
+        current.options.push({ displayText, outputText, isDefault });
 
         // first [x] wins; otherwise stays 0
         if (isDefault && current.options.every((o, i) => i === idx || !o.isDefault)) {
