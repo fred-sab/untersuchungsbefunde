@@ -12,6 +12,8 @@
   let dimensions = [];
   /** Stores defaults so reset is stable even if user edits DOM. */
   let defaultsByName = new Map();
+  /** Lines that should always be included (dimensions with no selectable non-default options). */
+  let alwaysIncludedLines = [];
 
   function setStatus(msg, type = "info") {
     if (!statusEl) return;
@@ -109,18 +111,28 @@
       d.defaultIndex = firstX >= 0 ? firstX : 0;
     }
 
-    // Filter dimensions without options
+    // Keep dims even if they only have the default (needed for always-include behavior)
     return dims.filter((d) => d.options.length > 0);
   }
 
   function renderForm(dims) {
     formEl.innerHTML = "";
     defaultsByName = new Map();
+    alwaysIncludedLines = [];
 
     for (const dim of dims) {
+      const defaultText = dim.options[dim.defaultIndex]?.outputText || "";
+      const nonDefaultOptions = dim.options.filter((_, idx) => idx !== dim.defaultIndex);
+
+      // If there's only the default option, do not render the dimension,
+      // but always add the corresponding default text to output.
+      if (nonDefaultOptions.length === 0) {
+        if (defaultText) alwaysIncludedLines.push(defaultText);
+        continue;
+      }
+
       const name = `dim_${slugify(dim.title)}_${Math.random().toString(16).slice(2)}`;
-      // Store the default outputText (not shown in UI) for output generation.
-      defaultsByName.set(name, dim.options[dim.defaultIndex]?.outputText || "");
+      defaultsByName.set(name, defaultText);
 
       const fieldset = document.createElement("fieldset");
       fieldset.className = "dimension";
@@ -130,7 +142,6 @@
       legend.textContent = dim.title;
       fieldset.appendChild(legend);
 
-      // Only render problem options (non-default) as checkboxes.
       dim.options.forEach((opt, idx) => {
         if (idx === dim.defaultIndex) return; // hide default option in UI
 
@@ -146,7 +157,6 @@
         input.id = id;
         input.value = String(idx);
         input.checked = false;
-        // Store outputText on the input element for later retrieval
         input.dataset.outputText = opt.outputText;
 
         const span = document.createElement("span");
@@ -163,15 +173,17 @@
 
   function getGeneratedText() {
     const lines = [];
-    const fieldsets = Array.from(formEl.querySelectorAll("fieldset.dimension"));
 
+    // Always include defaults for dimensions that aren't rendered
+    for (const l of alwaysIncludedLines) lines.push(l);
+
+    const fieldsets = Array.from(formEl.querySelectorAll("fieldset.dimension"));
     for (const fs of fieldsets) {
       const name = fs.dataset.name || "";
       const checked = Array.from(fs.querySelectorAll('input[type="checkbox"]:checked'));
 
       if (checked.length > 0) {
         for (const cb of checked) {
-          // Get the outputText from the input element's dataset
           const text = cb.dataset.outputText || "";
           if (text) lines.push(text);
         }

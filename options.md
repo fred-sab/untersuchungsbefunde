@@ -30,3 +30,12 @@
 	- [ ] Klopfschmerz links frontalis.
 	- [ ] Klopfschmerz rechts maxillaris.
 	- [ ] Klopfschmerz links maxillaris.
+
+
+### Ohren
+- Ohrmuschel
+	- [x] Ohrmuschel bds. nicht geschwolen oder gerötet. Kein Ohrmuschelzugschmerz. Kein Tragusdruckschmerz.
+
+- Gehörgang
+	- [x] Gehörgange reizlos, frei.
+	- [ ] Cerumen#Gehörgang durch Cerumen verlegt, TF nicht vollständig einsehbar. Keine Entzündungszeichen.
