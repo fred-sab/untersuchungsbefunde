@@ -1,12 +1,19 @@
 (() => {
   /** @typedef {{ displayText: string, outputText: string, isDefault: boolean }} Option */
   /** @typedef {{ title: string, options: Option[], defaultIndex: number }} Dimension */
+  /** @typedef {{ key: string, title: string, dimensions: Dimension[] }} Section */
 
   const formEl = document.getElementById("form");
   const outputEl = document.getElementById("output");
   const copyBtn = document.getElementById("copyBtn");
   const resetBtn = document.getElementById("resetBtn");
   const statusEl = document.getElementById("status");
+  const tabsEl = document.getElementById("tabs");
+
+  /** @type {Section[]} */
+  let sections = [];
+  /** @type {string | null} */
+  let activeSectionKey = null;
 
   /** @type {Dimension[]} */
   let dimensions = [];
@@ -39,9 +46,7 @@
   }
 
   /**
-   * Supports the README rules: top-level "- Title" creates a dimension,
-   * indented "- [x] text" / "- [ ] text" create options.
-   * Ignores anything outside this list structure (e.g. headings like "### Lunge").
+   * Existing parser: from a markdown fragment (with only list content) -> dimensions/options
    * @param {string} md
    * @returns {Dimension[]}
    */
@@ -58,7 +63,6 @@
       const trimmed = line.trim();
       if (!trimmed) continue;
 
-      // Dimension: "- Title" but NOT "- [x]" / "- [ ]"
       const dimMatch = trimmed.match(/^- (?!\[[ xX]\] )(.*)$/);
       if (dimMatch) {
         const title = dimMatch[1].trim();
@@ -68,16 +72,12 @@
         continue;
       }
 
-      // Option: "- [x] text" or "- [ ] text" (must have a current dimension)
       const optMatch = trimmed.match(/^- \[([ xX])\] (.*)$/);
       if (optMatch && current) {
         const isDefault = optMatch[1].toLowerCase() === "x";
         const text = (optMatch[2] || "").trim();
         if (!text) continue;
 
-        // Split on # to get displayText and outputText
-        // If # is present, text before # is for display, text after # is for output
-        // If no #, or if either part is empty, use the original text for both
         let displayText, outputText;
         const hashIndex = text.indexOf("#");
         if (hashIndex > 0 && hashIndex < text.length - 1) {
@@ -95,24 +95,81 @@
           outputText = text;
         }
 
-        const idx = current.options.length;
         current.options.push({ displayText, outputText, isDefault });
-
-        // first [x] wins; otherwise stays 0
-        if (isDefault && current.options.every((o, i) => i === idx || !o.isDefault)) {
-          current.defaultIndex = idx;
-        }
       }
     }
 
-    // Ensure defaultIndex consistent when multiple [x] appear:
     for (const d of dims) {
       const firstX = d.options.findIndex((o) => o.isDefault);
       d.defaultIndex = firstX >= 0 ? firstX : 0;
     }
 
-    // Keep dims even if they only have the default (needed for always-include behavior)
     return dims.filter((d) => d.options.length > 0);
+  }
+
+  /**
+   * NEW: Split the full options.md into sections based on markdown titles.
+   * A section starts at a heading like "### Title" and includes following lines until next heading.
+   * If there is list content before the first heading, it goes into a "General" section.
+   * @param {string} md
+   * @returns {Section[]}
+   */
+  function parseSections(md) {
+    const lines = md.replaceAll("\r\n", "\n").split("\n");
+
+    /** @type {{ title: string, key: string, body: string[] }[]} */
+    const rawSections = [];
+    let current = { title: "General", key: "general", body: [] };
+
+    for (const line of lines) {
+      const m = line.trim().match(/^#{2,6}\s+(.*)$/); // e.g. ### Lunge
+      if (m) {
+        // commit previous
+        if (current.body.some((l) => l.trim())) rawSections.push(current);
+        const title = (m[1] || "").trim();
+        current = { title: title || "Untitled", key: slugify(title || "Untitled"), body: [] };
+        continue;
+      }
+      current.body.push(line);
+    }
+    if (current.body.some((l) => l.trim())) rawSections.push(current);
+
+    /** @type {Section[]} */
+    const result = [];
+    for (const s of rawSections) {
+      const dims = parseOptionsMd(s.body.join("\n"));
+      if (dims.length) result.push({ key: s.key, title: s.title, dimensions: dims });
+    }
+    return result;
+  }
+
+  function renderTabs() {
+    if (!tabsEl) return;
+    tabsEl.innerHTML = "";
+
+    for (const s of sections) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tab";
+      btn.textContent = s.title;
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", String(s.key === activeSectionKey));
+      btn.addEventListener("click", () => {
+        setActiveSection(s.key);
+      });
+      tabsEl.appendChild(btn);
+    }
+  }
+
+  function setActiveSection(key) {
+    activeSectionKey = key;
+    const sec = sections.find((s) => s.key === key);
+    if (!sec) return;
+
+    dimensions = sec.dimensions;
+    renderTabs();
+    renderForm(dimensions);
+    updateOutput();
   }
 
   function renderForm(dims) {
@@ -124,8 +181,6 @@
       const defaultText = dim.options[dim.defaultIndex]?.outputText || "";
       const nonDefaultOptions = dim.options.filter((_, idx) => idx !== dim.defaultIndex);
 
-      // If there's only the default option, do not render the dimension,
-      // but always add the corresponding default text to output.
       if (nonDefaultOptions.length === 0) {
         if (defaultText) alwaysIncludedLines.push(defaultText);
         continue;
@@ -143,7 +198,7 @@
       fieldset.appendChild(legend);
 
       dim.options.forEach((opt, idx) => {
-        if (idx === dim.defaultIndex) return; // hide default option in UI
+        if (idx === dim.defaultIndex) return;
 
         const id = `${name}_${idx}`;
 
@@ -173,8 +228,6 @@
 
   function getGeneratedText() {
     const lines = [];
-
-    // Always include defaults for dimensions that aren't rendered
     for (const l of alwaysIncludedLines) lines.push(l);
 
     const fieldsets = Array.from(formEl.querySelectorAll("fieldset.dimension"));
@@ -206,7 +259,6 @@
       await navigator.clipboard.writeText(text);
       return;
     }
-    // Fallback
     outputEl.focus();
     outputEl.select();
     document.execCommand("copy");
@@ -226,14 +278,15 @@
       if (!res.ok) throw new Error(`Failed to load options.md (${res.status})`);
       const md = await res.text();
 
-      dimensions = parseOptionsMd(md);
-      if (!dimensions.length) {
+      sections = parseSections(md);
+      if (!sections.length) {
         setStatus("No dimensions/options found in options.md. Check formatting.", "error");
         return;
       }
 
-      renderForm(dimensions);
-      updateOutput();
+      activeSectionKey = sections[0].key;
+      renderTabs();
+      setActiveSection(activeSectionKey);
       setStatus("");
     } catch (err) {
       setStatus(err?.message || "Failed to initialize.", "error");

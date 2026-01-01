@@ -28,6 +28,13 @@ body {
   margin: 0 auto;
 }
 
+/* NEW: keep tabs aligned with app width while being outside cards */
+.tabs-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px 6px;
+}
+
 h1 {
   margin: 0 0 6px;
   font-size: 20px;
@@ -161,4 +168,33 @@ button:hover {
   font-size: 12.5px;
   resize: vertical;
   min-height: 440px;
+}
+
+/* NEW: tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0; /* was: 6px 0 12px (when inside card) */
+}
+
+.tab {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  border-color: color-mix(in oklab, var(--accent), var(--border) 40%);
+  background: color-mix(in oklab, var(--accent), white 88%);
+}
+
+.tab:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent), white 30%);
+  outline-offset: 2px;
 }
