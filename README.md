@@ -7,6 +7,8 @@ It relies on the file `options.md` for content.
 
 It is deployed at https://fred-sab.github.io/untersuchungsbefunde.
 
+Disclaimer: this is a POC done with the aim to quickly help for reporting. It was very quickly vibe-coded with copilot ;-)
+
 ## options.md format
 
 `options.md` is Markdown content describing **Sections** (via headings), containing **Dimensions** (top-level list items), containing **Options** (checkbox list items).
