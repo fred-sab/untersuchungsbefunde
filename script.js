@@ -1,3 +1,5 @@
+import { parseSections, slugify } from "./parser.js";
+
 (() => {
   /** @typedef {{ displayText: string, outputText: string, isDefault: boolean }} Option */
   /** @typedef {{ title: string, options: Option[], defaultIndex: number }} Dimension */
@@ -35,112 +37,6 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
-  }
-
-  function slugify(s) {
-    return s
-      .toLowerCase()
-      .trim()
-      .replaceAll(/[^\p{L}\p{N}]+/gu, "-")
-      .replaceAll(/^-+|-+$/g, "");
-  }
-
-  /**
-   * Existing parser: from a markdown fragment (with only list content) -> dimensions/options
-   * @param {string} md
-   * @returns {Dimension[]}
-   */
-  function parseOptionsMd(md) {
-    const lines = md.replaceAll("\r\n", "\n").split("\n");
-
-    /** @type {Dimension[]} */
-    const dims = [];
-    /** @type {Dimension | null} */
-    let current = null;
-
-    for (const rawLine of lines) {
-      const line = rawLine.replaceAll("\t", "    "); // normalize tabs
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-
-      const dimMatch = trimmed.match(/^- (?!\[[ xX]\] )(.*)$/);
-      if (dimMatch) {
-        const title = dimMatch[1].trim();
-        if (!title) continue;
-        current = { title, options: [], defaultIndex: 0 };
-        dims.push(current);
-        continue;
-      }
-
-      const optMatch = trimmed.match(/^- \[([ xX])\] (.*)$/);
-      if (optMatch && current) {
-        const isDefault = optMatch[1].toLowerCase() === "x";
-        const text = (optMatch[2] || "").trim();
-        if (!text) continue;
-
-        let displayText, outputText;
-        const hashIndex = text.indexOf("#");
-        if (hashIndex > 0 && hashIndex < text.length - 1) {
-          const beforeHash = text.substring(0, hashIndex).trim();
-          const afterHash = text.substring(hashIndex + 1).trim();
-          if (beforeHash && afterHash) {
-            displayText = beforeHash;
-            outputText = afterHash;
-          } else {
-            displayText = text;
-            outputText = text;
-          }
-        } else {
-          displayText = text;
-          outputText = text;
-        }
-
-        current.options.push({ displayText, outputText, isDefault });
-      }
-    }
-
-    for (const d of dims) {
-      const firstX = d.options.findIndex((o) => o.isDefault);
-      d.defaultIndex = firstX >= 0 ? firstX : 0;
-    }
-
-    return dims.filter((d) => d.options.length > 0);
-  }
-
-  /**
-   * NEW: Split the full options.md into sections based on markdown titles.
-   * A section starts at a heading like "### Title" and includes following lines until next heading.
-   * If there is list content before the first heading, it goes into a "General" section.
-   * @param {string} md
-   * @returns {Section[]}
-   */
-  function parseSections(md) {
-    const lines = md.replaceAll("\r\n", "\n").split("\n");
-
-    /** @type {{ title: string, key: string, body: string[] }[]} */
-    const rawSections = [];
-    let current = { title: "General", key: "general", body: [] };
-
-    for (const line of lines) {
-      const m = line.trim().match(/^#{2,6}\s+(.*)$/); // e.g. ### Lunge
-      if (m) {
-        // commit previous
-        if (current.body.some((l) => l.trim())) rawSections.push(current);
-        const title = (m[1] || "").trim();
-        current = { title: title || "Untitled", key: slugify(title || "Untitled"), body: [] };
-        continue;
-      }
-      current.body.push(line);
-    }
-    if (current.body.some((l) => l.trim())) rawSections.push(current);
-
-    /** @type {Section[]} */
-    const result = [];
-    for (const s of rawSections) {
-      const dims = parseOptionsMd(s.body.join("\n"));
-      if (dims.length) result.push({ key: s.key, title: s.title, dimensions: dims });
-    }
-    return result;
   }
 
   function renderTabs() {
