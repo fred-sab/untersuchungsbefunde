@@ -17,19 +17,20 @@
 	- [ ] Perkussion rechts abgeschwächt.
 	- [ ] Perkussion bds. abgeschwächt.
 - Tonsillen
-	- [x] Enoral reizlos. Tonsillen nicht gerötet oder belegt.
-	- [ ] Tonsillen vergrössert.
-	- [ ] Tonsillen gerötet.
-	- [ ] Tonsillen belegt.
+	- [x] Enoral reizlos. Tonsillen
+ 	- [ ] reizlos# nicht gerötet oder belegt.
+	- [ ] Vergrössert.
+	- [ ] Gerötet.
+	- [ ] Belegt.
 - Sekret
 	- [x] Oropharynx unauffällig.
 	- [ ] Rachensekret#Sekretstrasse im Oropharynx.
-- Klopfschmerz
+- Klopfschmerz NNH
 	- [x] Kein Klopfschmerz über NNH.
-	- [ ] Klopfschmerz rechts frontalis.
-	- [ ] Klopfschmerz links frontalis.
-	- [ ] Klopfschmerz rechts maxillaris.
-	- [ ] Klopfschmerz links maxillaris.
+	- [ ] Frontal rechts#Klopfschmerz über Sinus frontalis rechts.
+	- [ ] Frontal links#Klopfschmerz über Sinus frontalis links.
+	- [ ] Maxillar rechts#Klopfschmerz über Sinus maxillaris rechts.
+	- [ ] Maxillar links#Klopfschmerz über Sinus maxillaris links.
 
 
 ### Ohren
@@ -39,5 +40,26 @@
 - Gehörgang
 	- [x] Gehörgange reizlos, frei.
 	- [ ] Cerumen#Gehörgang durch Cerumen verlegt, TF nicht vollständig einsehbar. Keine Entzündungszeichen.
+
+###Wirbelsäule
+- Inspektion
+  	- [x] Stand sicher. Wirbelsäule gerade
+
+- Palpation
+	- [x] Kein Druck- oder Klopfschmerz.
+ 	- [ ] Paravertebraler Druckschmerz. 
+ 
+- Bewegungsprüfung
+	- [x] Inklination und Reklination uneingeschränkt. Finger-Boden-Abstand X cm. Rotation, sowie Seitneigung altersentsprechend.
+
+- Kraft
+  	- [x] Kraft symmetrisch in den Extremitäten M5.
+  	- [ ] Muskeln ausführlich# Händedruck bds. kräftig. Fingerspreizen M5. Fingerkrallen kräftig. Ellenbogenflexion und -extension M5, Schulterabduktion und -adduktion M5. Hüftabduktion und -adduktion M5. Knieextension und -flexion M5, Dorsalextension und Plantarflexion M5.
+  	- [ ] Globaltests# Einbeinstand ohne Absinken der Hüfte. Zehen- und Fersenstand sicher.
+ 
+ - Reflexe
+ 
+ - Sensibilität
+   - [x] Sensibilität grobkursorisch für Berührung intakt. 
 
 
