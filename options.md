@@ -41,7 +41,7 @@
 	- [x] Gehörgange reizlos, frei.
 	- [ ] Cerumen#Gehörgang durch Cerumen verlegt, TF nicht vollständig einsehbar. Keine Entzündungszeichen.
 
-###Wirbelsäule
+### Wirbelsäule
 - Inspektion
   	- [x] Stand sicher. Wirbelsäule gerade
 
